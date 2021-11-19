@@ -28,8 +28,8 @@ class UsersController extends Controller
     {
         $users = new User();
         $users = DB::table('users')
-        ->select()
-        ->where('userType', 0)->get();
+            ->select()
+            ->where('userType', 0)->get();
         return view('users.user', ["users" => $users]);
     }
     //admins only
@@ -37,9 +37,9 @@ class UsersController extends Controller
     {
         $users = new User();
         $users = DB::table('users')
-        ->select()
-        ->where('userType', 1)->get();
-        return view('users.user', ["users" => $users]);
+            ->select()
+            ->where('userType', 1)->get();
+        return view('users.admin', ["users" => $users]);
     }
 
     /**
@@ -51,7 +51,14 @@ class UsersController extends Controller
     {
         return view('users.create');
     }
-
+    public function createuser()
+    {
+        return view('users.createuser');
+    }
+    public function createadmin()
+    {
+        return view('users.createadmin');
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -86,11 +93,72 @@ class UsersController extends Controller
         }
         if ($user->save()) {
             return  redirect('/users');
-        }else{
-            return view ('users.create');
+        } else {
+            return view('users.create');
         }
     }
-
+    public function storeadmin(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'string', 'max:9', 'min:8']
+        ]);
+        $hasFile = $request->hasFile('profile_pic') && $request->profile_pic->isValid();
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->phone = $request->phone;
+        
+            $user->music_preferences = 0;
+        
+        $user->userType = 1;
+        if ($hasFile) {
+            $file = $request->file('profile_pic');
+            $filename = $file->getClientOriginalName();
+            $request->profile_pic->storeAs('profilePics', $filename);
+            $user->profile_picture = $filename;
+        }
+        if ($user->save()) {
+            return  redirect('/users/admin');
+        } else {
+            return view('users.create');
+        }
+    }
+    public function storeuser(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'string', 'max:9', 'min:8']
+        ]);
+        $hasFile = $request->hasFile('profile_pic') && $request->profile_pic->isValid();
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->phone = $request->phone;
+        if ($request->music_preferences!=null) {
+            $user->music_preferences = $request->music_preferences;
+        } else {
+            $user->music_preferences = 0;
+        }
+        $user->userType = 0;
+        if ($hasFile) {
+            $file = $request->file('profile_pic');
+            $filename = $file->getClientOriginalName();
+            $request->profile_pic->storeAs('profilePics', $filename);
+            $user->profile_picture = $filename;
+        }
+        if ($user->save()) {
+            return  redirect('/users/user');
+        } else {
+            return view('/users/createuser');
+        }
+    }
     /**
      * Display the specified resource.
      *
@@ -101,9 +169,29 @@ class UsersController extends Controller
     {
         $user = new User();
         $user = User::find($id);
-        if($user!=null){
-            return view('users.edit',["user"=>$user]);
-        }else{
+        if ($user != null) {
+            return view('users.edit', ["user" => $user]);
+        } else {
+            return redirect('/users');
+        }
+    }
+    public function showuser($id)
+    {
+        $user = new User();
+        $user = User::find($id);
+        if ($user != null) {
+            return view('users.edituser', ["user" => $user]);
+        } else {
+            return redirect('/users');
+        }
+    }
+    public function showadmin($id)
+    {
+        $user = new User();
+        $user = User::find($id);
+        if ($user != null) {
+            return view('users.editadmin', ["user" => $user]);
+        } else {
             return redirect('/users');
         }
     }
@@ -155,8 +243,70 @@ class UsersController extends Controller
         }
         if ($user->save()) {
             return  redirect('/users');
-        }else{
-            return  route('users.show',$id);
+        } else {
+            return  route('users.show', $id);
+        }
+    }
+    //update user
+    public function updateuser(Request $request, $id)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'string', 'max:9', 'min:8']
+        ]);
+        $user = User::find($id);
+        $hasFile = $request->hasFile('profile_pic') && $request->profile_pic->isValid();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->phone = $request->phone;
+        if ($request->userType == 0) {
+            $user->music_preferences = $request->music_preferences;
+        } else {
+            $user->music_preferences = 0;
+        }
+        $user->userType = 0;
+        if ($hasFile) {
+            $file = $request->file('profile_pic');
+            $filename = $file->getClientOriginalName();
+            $request->profile_pic->storeAs('profilePics', $filename);
+            $user->profile_picture = $filename;
+        }
+        if ($user->save()) {
+            return  redirect('/users/user/');
+        } else {
+            return  route('/users/user', $id);
+        }
+    }
+
+    public function updateadmin(Request $request, $id)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'string', 'max:9', 'min:8']
+        ]);
+        $user = User::find($id);
+        $hasFile = $request->hasFile('profile_pic') && $request->profile_pic->isValid();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->phone = $request->phone;
+        $user->music_preferences = 0;
+        $user->userType = 1;
+        if ($hasFile) {
+            $file = $request->file('profile_pic');
+            $filename = $file->getClientOriginalName();
+            $request->profile_pic->storeAs('profilePics', $filename);
+            $user->profile_picture = $filename;
+        }
+        if ($user->save()) {
+            return  redirect('/users/admin/');
+        } else {
+            return  route('/users/user', $id);
         }
     }
 

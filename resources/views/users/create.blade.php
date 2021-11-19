@@ -86,7 +86,7 @@ $user_type = [
                         </div>
                         <div class="form-group row">
                             <label for="music_preferences"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Preferencias musicales') }}</label>
+                                class="col-md-4 col-form-label text-md-right">{{ __('Tipo de usuario') }}</label>
                             <div class="col-md-6">
                                 <div class="input-group">
                                     {{ Form::select('userType', $user_type, 0, ['class' => 'form-control', 'id' => 'userType']) }}

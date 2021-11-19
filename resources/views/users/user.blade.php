@@ -8,7 +8,7 @@
                         Usuarios</h3>
                     <div class="card-body">
                         <!-- Button trigger modal -->
-                        <a href="{{ route('users.create') }}"
+                        <a href="{{ url('/users/createuser') }}"
                             class="btn btn-primary">
                             <i class="bi bi-plus-circle-fill"></i> Agregar usuario
                         </a>
@@ -58,7 +58,7 @@
                                                     <td>
                                                         <a type="button"
                                                             class="btn btn-warning"
-                                                            href="/users/{{$user->id}}">
+                                                            href="/users/user/{{$user->id}}">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </a>
                                                     </td>

@@ -5,15 +5,13 @@
             <div class="col-md-12">
                 <div class="card">
                     <h3 class="card-header">
-                        Usuarios</h3>
+                        Administradores</h3>
                     <div class="card-body">
                         <!-- Button trigger modal -->
-                        <a href="{{ route('users.create') }}"
+                        <a href="{{ url('/users/createadmin') }}"
                             class="btn btn-primary">
-                            <i class="bi bi-plus-circle-fill"></i> Agregar usuario
+                            <i class="bi bi-plus-circle-fill"></i> Agregar Administrador
                         </a>
-
-
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="table-responsive">
@@ -36,7 +34,6 @@
                                                     <td>{{ $user->name }}</td>
                                                     <td>{{ $user->email }}</td>
                                                     <td>{{ $user->phone }}</td>
-                                                    
                                                     <td><img src="{{ url("users/profilePic/$user->profile_picture") }}"
                                                             width="50"
                                                             height="50">
@@ -45,7 +42,7 @@
                                                     <td>
                                                         <a type="button"
                                                             class="btn btn-warning"
-                                                            href="/users/{{$user->id}}">
+                                                            href="/users/admin/{{$user->id}}">
                                                             <i class="bi bi-pencil-fill"></i>
                                                         </a>
                                                     </td>

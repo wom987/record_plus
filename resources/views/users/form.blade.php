@@ -1,9 +1,4 @@
-<?php
-$user_type = [
-    '0' => 'Usuario',
-    '1' => 'Administrador',
-];
-?>
+
 @extends('layouts.app')
 @section('content')
     <div class="container">
@@ -12,12 +7,12 @@ $user_type = [
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"
-                            id="exampleModalLabel">Editar Usuario</h5>
+                            id="exampleModalLabel">{{$title }}</h5>
                         </button>
                     </div>
 
                     <form method="post"
-                        action="{{ route('users.update', $user->id) }}"
+                        action="{{$url}}{{$user->id }}"
                         enctype="multipart/form-data">
                         @method('PUT')
                         <div class="form-group row">
@@ -84,20 +79,10 @@ $user_type = [
                             </div>
 
                         </div>
+                        @if ($user_type=="user")
                         <div class="form-group row">
                             <label for="music_preferences"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Tipo de usuario') }}</label>
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    {{ Form::select('userType', $user_type, $user->userType, ['class' => 'form-control', 'id' => 'userType']) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row"
-                            id="music_container">
-                            <label for="music_preferences"
                                 class="col-md-4 col-form-label text-md-right">{{ __('Preferencias musicales') }}</label>
-
                             <div class="col-md-6">
                                 <input type="text"
                                     id="music_preferences"
@@ -112,7 +97,8 @@ $user_type = [
                                 data-role="tagsinput" />
                             </div>
                         </div>
-
+                        @endif
+                        
                         <div class="form-group row">
                             <label for="password"
                                 class="col-md-4 col-form-label text-md-right">{{ __('Contraseña') }}</label>
@@ -160,10 +146,17 @@ $user_type = [
                                     class="btn btn-warning">
                                     {{ __('Actualizar') }}
                                 </button>
+                                @if ($user_type=="user")
                                 <a class="btn"
-                                    href="{{ route('users.index') }}">
-                                    {{ __('regresar') }}
-                                </a>
+                                href="{{ url('/users/user') }}">
+                                {{ __('regresar') }}
+                            </a>
+                                @else
+                                <a class="btn"
+                                href="{{ url('/users/admin') }}">
+                                {{ __('regresar') }}
+                            </a> 
+                                @endif
                             </div>
                         </div>
                     </form>

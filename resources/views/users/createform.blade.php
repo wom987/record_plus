@@ -1,9 +1,4 @@
-<?php
-$user_type = [
-    '0' => 'Usuario',
-    '1' => 'Administrador',
-];
-?>
+
 @extends('layouts.app')
 @section('content')
     <div class="container">
@@ -12,14 +7,14 @@ $user_type = [
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"
-                            id="exampleModalLabel">Editar Usuario</h5>
+                            id="exampleModalLabel">{{$title }}</h5>
                         </button>
                     </div>
 
                     <form method="post"
-                        action="{{ route('users.update', $user->id) }}"
+                        action="{{$url}}"
                         enctype="multipart/form-data">
-                        @method('PUT')
+                        @method('POST')
                         <div class="form-group row">
                             @csrf
                             <label for="name"
@@ -30,8 +25,8 @@ $user_type = [
                                     type="text"
                                     class="form-control @error('name') is-invalid @enderror"
                                     name="name"
-                                    value="{{ $user->name }}"
                                     required
+                                    value="{{ old('name') }}"
                                     autocomplete="name"
                                     autofocus>
 
@@ -52,8 +47,8 @@ $user_type = [
                                 <input id="email"
                                     type="email"
                                     class="form-control @error('email') is-invalid @enderror"
-                                    name="email"
-                                    value="{{ $user->email }}"
+                                    name="email"                                    
+                                    value="{{ old('email') }}"
                                     required
                                     autocomplete="email">
 
@@ -73,7 +68,7 @@ $user_type = [
                                 <input type="text"
                                     name="phone"
                                     id="phone"
-                                    value="{{ $user->phone }}"
+                                    value="{{ old('phone') }}"
                                     class="form-control @error('phone') is-invalid @enderror" />
                                 @error('phone')
                                     <span class="invalid-feedback"
@@ -84,35 +79,21 @@ $user_type = [
                             </div>
 
                         </div>
+                        @if ($user_type=="user")
                         <div class="form-group row">
                             <label for="music_preferences"
-                                class="col-md-4 col-form-label text-md-right">{{ __('Tipo de usuario') }}</label>
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    {{ Form::select('userType', $user_type, $user->userType, ['class' => 'form-control', 'id' => 'userType']) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row"
-                            id="music_container">
-                            <label for="music_preferences"
                                 class="col-md-4 col-form-label text-md-right">{{ __('Preferencias musicales') }}</label>
-
                             <div class="col-md-6">
                                 <input type="text"
                                     id="music_preferences"
                                     name="music_preferences"
                                     class="form-control"
-                                    value="
-                                    @if ($user->music_preferences == 0)
-                                        Rock,Jazz,Electrónica,Reggae,Salsa,Dubstep,Cumbia,Rock and Roll,Gospel
-                                    @else
-                                        {{ $user->music_preferences }}
-                                    @endif"
+                                    value="Rock,Jazz,Electrónica,Reggae,Salsa,Dubstep,Cumbia,Rock and Roll,Gospel"
                                 data-role="tagsinput" />
                             </div>
                         </div>
-
+                        @endif
+                        
                         <div class="form-group row">
                             <label for="password"
                                 class="col-md-4 col-form-label text-md-right">{{ __('Contraseña') }}</label>
@@ -157,13 +138,20 @@ $user_type = [
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit"
-                                    class="btn btn-warning">
-                                    {{ __('Actualizar') }}
+                                    class="btn btn-success">
+                                    {{ __('Guardar') }}
                                 </button>
+                                @if ($user_type=="user")
                                 <a class="btn"
-                                    href="{{ route('users.index') }}">
-                                    {{ __('regresar') }}
-                                </a>
+                                href="{{ url('/users/user') }}">
+                                {{ __('regresar') }}
+                            </a>
+                                @else
+                                <a class="btn"
+                                href="{{ url('/users/admin') }}">
+                                {{ __('regresar') }}
+                            </a> 
+                                @endif
                             </div>
                         </div>
                     </form>
