@@ -6,7 +6,8 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Por favor verifica tu correo') }}</div>
-
+                <img src="{{asset('storage/default.png')}}" class="rounded mx-auto d-block" width="200" height="200">
+                
                 <div class="card-body">
                     @if (session('resent'))
                         <div class="alert alert-success" role="alert">
@@ -18,7 +19,7 @@
                     {{ __('Si aún no recibe el correo') }},
                     <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                         @csrf
-                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('Hacer click aca para envia uno nuevo') }}</button>.
+                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('click para enviar uno nuevo') }}</button>.
                     </form>
                 </div>
             </div>

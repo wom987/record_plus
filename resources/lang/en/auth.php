@@ -14,7 +14,7 @@ return [
     */
 
     'failed' => 'Usuario y/o contraseña inválidos!',
-    'password' => 'The provided password is incorrect.',
+    'password' => 'Usuario y/o contraseña inválidos!',
     'throttle' => 'Vaya, hay demasiados intentos de inicio, intente de nuevo en :seconds segundos.',
 
 ];
