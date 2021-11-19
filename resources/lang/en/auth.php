@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => 'Las cerdennciales no se encuentran en los registros.',
+    'failed' => 'Usuario y/o contraseña inválidos!',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Vaya, hay demasiados intentos de inicio, intente de nuevo en :seconds segundos.',
 
