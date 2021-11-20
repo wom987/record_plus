@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Disk;
 use Illuminate\Http\Request;
 
 class DisksController extends Controller
@@ -17,7 +18,8 @@ class DisksController extends Controller
      */
     public function index()
     {
-        //
+        $disks = Disk::all();
+        return view('disks.index',['disks'=>$disks]);
     }
 
     /**
@@ -27,7 +29,8 @@ class DisksController extends Controller
      */
     public function create()
     {
-        //
+        $disk = new Disk();
+        return view('disks.create');
     }
 
     /**
@@ -38,7 +41,26 @@ class DisksController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $hasFile = $request->hasFile('cover') && $request->cover->isValid();
+        $disk = new Disk();
+        $disk->name = $request->name;
+        $disk->album = $request->album;
+        $disk->artist = $request->artist;
+        $disk->genere = $request->genere;
+        $disk->year = $request->year;
+        if ($hasFile) {
+            $file = $request->file('cover');
+            $filename = $file->getClientOriginalName();
+            $request->cover->storeAs('disksPics', $filename);
+            $disk->cover = $filename;
+        }else{
+            $disk->cover = 'default.jpg';
+        }
+        if ($disk->save()) {
+            return  redirect('/disks');
+        } else {
+            return route('disks.create');
+        }
     }
 
     /**
@@ -49,7 +71,8 @@ class DisksController extends Controller
      */
     public function show($id)
     {
-        //
+        $disk = Disk::findOrFail($id);
+        return view('disks.edit',['disk'=>$disk]);
     }
 
     /**
@@ -72,7 +95,24 @@ class DisksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $hasFile = $request->hasFile('cover') && $request->cover->isValid();
+        $disk = Disk::find($id);
+        $disk->name = $request->name;
+        $disk->album = $request->album;
+        $disk->artist = $request->artist;
+        $disk->genere = $request->genere;
+        $disk->year = $request->year;
+        if ($hasFile) {
+            $file = $request->file('cover');
+            $filename = $file->getClientOriginalName();
+            $request->cover->storeAs('disksPics', $filename);
+            $disk->cover = $filename;
+        }
+        if ($disk->save()) {
+            return  redirect('/disks');
+        } else {
+            return route('disks.show',$id);
+        }
     }
 
     /**
@@ -83,6 +123,7 @@ class DisksController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Disk::destroy($id);
+        return redirect('/users');
     }
 }

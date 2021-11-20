@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\DisksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,9 +46,19 @@ Route::prefix("users")->group(function () {
 
 //resource routes
 Route::resource('/users', UsersController::class);
+Route::resource('/disks', DisksController::class);
 //show images
 Route::get('users/profilePic/{filename}', function ($filename) {
     $path = storage_path("app/profilePics/$filename");
+    if (!\Illuminate\Support\Facades\File::exists($path)) abort(404);
+    $file = \Illuminate\Support\Facades\File::get($path);
+    $type = \Illuminate\Support\Facades\File::mimeType($path);
+    $response = Response::make($file, 200);
+    $response->header('Content-Type', $type);
+    return $response;
+});
+Route::get('disk/diskPic/{filename}', function ($filename) {
+    $path = storage_path("app/disksPics/$filename");
     if (!\Illuminate\Support\Facades\File::exists($path)) abort(404);
     $file = \Illuminate\Support\Facades\File::get($path);
     $type = \Illuminate\Support\Facades\File::mimeType($path);
