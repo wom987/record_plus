@@ -44,6 +44,8 @@ Route::prefix("users")->group(function () {
     });
 });
 
+//disk search
+Route::post('/disks/search', [DisksController::class, 'search']);
 //resource routes
 Route::resource('/users', UsersController::class);
 Route::resource('/disks', DisksController::class);

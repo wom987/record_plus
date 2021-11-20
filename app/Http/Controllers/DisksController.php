@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Disk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DisksController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth','verified']);
+        $this->middleware(['auth', 'verified']);
     }
     /**
      * Display a listing of the resource.
@@ -19,7 +20,7 @@ class DisksController extends Controller
     public function index()
     {
         $disks = Disk::all();
-        return view('disks.index',['disks'=>$disks]);
+        return view('disks.index', ['disks' => $disks]);
     }
 
     /**
@@ -53,7 +54,7 @@ class DisksController extends Controller
             $filename = $file->getClientOriginalName();
             $request->cover->storeAs('disksPics', $filename);
             $disk->cover = $filename;
-        }else{
+        } else {
             $disk->cover = 'default.jpg';
         }
         if ($disk->save()) {
@@ -72,7 +73,7 @@ class DisksController extends Controller
     public function show($id)
     {
         $disk = Disk::findOrFail($id);
-        return view('disks.edit',['disk'=>$disk]);
+        return view('disks.edit', ['disk' => $disk]);
     }
 
     /**
@@ -111,7 +112,7 @@ class DisksController extends Controller
         if ($disk->save()) {
             return  redirect('/disks');
         } else {
-            return route('disks.show',$id);
+            return route('disks.show', $id);
         }
     }
 
@@ -125,5 +126,12 @@ class DisksController extends Controller
     {
         Disk::destroy($id);
         return redirect('/users');
+    }
+    //search function
+    public function search(Request $r)
+    {
+        $disks = DB::table('disks')->where($r->filter, 'LIKE', '%' . $r->key . '%')
+            ->get();
+        return view('disks.index', ['disks' => $disks]);
     }
 }
